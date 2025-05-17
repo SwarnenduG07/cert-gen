@@ -13,6 +13,17 @@ interface CertificateData {
   issueDate: Date;
   description: string;
   selectedTemplate: number;
+  borderStyle: string;
+  primaryColor: string;
+  secondaryColor: string;
+  font: string;
+  logo?: File;
+  signature?: File;
+  certificateNumber: string;
+  qrCode: boolean;
+  watermark: boolean;
+  selectedText: string | null;
+  selectedElement: string | null;
 }
 
 export default function Home() {
@@ -22,7 +33,16 @@ export default function Home() {
     issuerName: "",
     issueDate: new Date(),
     description: "",
-    selectedTemplate: 1
+    selectedTemplate: 1,
+    borderStyle: 'classic',
+    primaryColor: '#000000',
+    secondaryColor: '#000000',
+    font: 'serif',
+    certificateNumber: '',
+    qrCode: false,
+    watermark: false,
+    selectedText: null,
+    selectedElement: null
   });
 
   const handleDataChange = (data: Partial<CertificateData>) => {

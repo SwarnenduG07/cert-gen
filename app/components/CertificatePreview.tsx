@@ -1,9 +1,10 @@
 'use client';
 
 import { useRef } from 'react';
-import ClassicTemplate from '../templates/ClassicTemplate';
-import { toPng } from 'html-to-image';
+import { QRCodeCanvas } from 'qrcode.react';
 import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
+import ClassicTemplate from '../templates/ClassicTemplate';
 import ModernTemplate from '../templates/ModernTemplate';
 import ElegantTemplate from '../templates/ElegantTemplate';
 
@@ -14,46 +15,81 @@ interface CertificateData {
   issueDate: Date;
   description: string;
   selectedTemplate: number;
+  borderStyle: string;
+  primaryColor: string;
+  secondaryColor: string;
+  font: string;
+  logo?: File;
+  signature?: File;
+  certificateNumber: string;
+  qrCode: boolean;
+  watermark: boolean;
+  selectedText: string | null;
+  selectedElement: string | null;
 }
 
 interface CertificatePreviewProps {
   data: CertificateData;
+  onDataChange?: (data: Partial<CertificateData>) => void;
 }
 
-export default function CertificatePreview({ data }: CertificatePreviewProps) {
+export default function CertificatePreview({ data, onDataChange }: CertificatePreviewProps) {
   const certificateRef = useRef<HTMLDivElement>(null);
 
-  // Select template based on user's choice
+  const handleTextSelect = (text: string, element: string) => {
+    onDataChange?.({
+      selectedText: text,
+      selectedElement: element
+    });
+  };
+
+  // Generate unique certificate verification URL
+  const verificationUrl = `https://your-domain.com/verify/${data.certificateNumber}`;
+
+  // Bring back the template rendering function
   const renderTemplate = () => {
     switch (data.selectedTemplate) {
       case 1:
-        return <ClassicTemplate data={data} />;
+        return <ClassicTemplate data={data} onTextSelect={handleTextSelect} />;
       case 2:
-        return <ModernTemplate data={data} />;
+        return <ModernTemplate data={data} onTextSelect={handleTextSelect} />;
       case 3:
-        return <ElegantTemplate data={data} />;
+        return <ElegantTemplate data={data} onTextSelect={handleTextSelect} />;
       default:
-        return <ClassicTemplate data={data} />;
+        return <ClassicTemplate data={data} onTextSelect={handleTextSelect} />;
     }
   };
 
   const downloadAsPDF = async () => {
-    if (certificateRef.current === null) return;
-    
+    if (!certificateRef.current) return;
+
     try {
-      const dataUrl = await toPng(certificateRef.current, { quality: 1.0 });
-      
+      const canvas = await html2canvas(certificateRef.current, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: null
+      });
+
+      const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'mm',
         format: 'a4'
       });
-      
-      const imgProps = pdf.getImageProperties(dataUrl);
+
+      pdf.setProperties({
+        title: `Certificate - ${data.recipientName}`,
+        subject: data.certificateTitle,
+        author: data.issuerName,
+        keywords: 'certificate, achievement',
+        creator: 'Certificate Generator'
+      });
+
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      const pdfHeight = pdf.internal.pageSize.getHeight();
       
-      pdf.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(`${data.recipientName}-certificate.pdf`);
     } catch (error) {
       console.error('Error generating PDF:', error);
@@ -61,13 +97,26 @@ export default function CertificatePreview({ data }: CertificatePreviewProps) {
   };
 
   return (
-    <div className="bg-white p-2 rounded-lg shadow-md">
+    <div className="relative">
       <div 
         ref={certificateRef}
-        className="border border-gray-200 aspect-[1.414/1] w-full"
+        className={`aspect-[1.414/1] w-full p-8 relative ${data.font}`}
+        style={{
+          backgroundColor: '#ffffff',
+          boxShadow: '0 0 20px rgba(0,0,0,0.1)'
+        }}
       >
-        {renderTemplate()}
+        {data.selectedTemplate === 1 && <ClassicTemplate data={data} onTextSelect={handleTextSelect} />}
+        {data.selectedTemplate === 2 && <ModernTemplate data={data} onTextSelect={handleTextSelect} />}
+        {data.selectedTemplate === 3 && <ElegantTemplate data={data} onTextSelect={handleTextSelect} />}
       </div>
+
+      <button
+        onClick={downloadAsPDF}
+        className="mt-4 w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
+      >
+        Download Certificate
+      </button>
     </div>
   );
 } 
