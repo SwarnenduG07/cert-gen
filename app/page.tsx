@@ -11,16 +11,19 @@ import CertificatePreview from "./components/CertificatePreview";
 import { HiOutlineSparkles } from "react-icons/hi";
 import { Button } from "@/components/ui/button";
 
+import { useRouter } from "next/navigation";
+
+
 export default function Home() {
   const [activeTab, setActiveTab] = useState("template");
-  
+  const router = useRouter();
   const [certificateData, setCertificateData] = useState<CertificateData>({
     recipientName: "",
     certificateTitle: "",
     issuerName: "",
     issueDate: new Date(),
     description: "",
-    selectedTemplate: 0, 
+    selectedTemplate: 0,
     borderStyle: 'classic',
     primaryColor: '#000000',
     secondaryColor: '#000000',
@@ -32,14 +35,30 @@ export default function Home() {
     selectedElement: null
   });
 
+  const [isSmallDevice, setIsSmallDevice] = useState(false);
+
+   useEffect(() => {
+    const checkScreenSize = () => {
+      const smallDevice = window.innerWidth < 1024;
+      setIsSmallDevice(smallDevice);
+      if (smallDevice && window.location.pathname !== '/small') {
+        router.push('/small');
+      }
+    };
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, [router]);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const tabParam = params.get('tab');
-      
+
       if (tabParam && (tabParam === 'template' || tabParam === 'preview')) {
         setActiveTab(tabParam);
-        
+
         if (tabParam === 'template' && window.location.hash === '#template-section') {
           setTimeout(() => {
             document.getElementById('template-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -56,9 +75,9 @@ export default function Home() {
   const handleDownload = async () => {
     try {
       // Check if our global function exists (it's added to window from CertificatePreview)
-      if (typeof window !== 'undefined' && window.downloadCertificateAsPDF) {
+      if (typeof window !== 'undefined' && 'downloadCertificateAsPDF' in window) {
         // Call the download function directly
-        window.downloadCertificateAsPDF();
+        (window as { downloadCertificateAsPDF: () => void }).downloadCertificateAsPDF();
       } else {
         // Fallback to showing toast only
         toast.loading("Downloading certificate...");
@@ -73,6 +92,10 @@ export default function Home() {
     }
   };
 
+  if(isSmallDevice) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-[#080510] text-white relative pt-16 overflow-hidden">
       {/* Background effects */}
@@ -81,9 +104,9 @@ export default function Home() {
 
       {/* Mesh grid overlay */}
       <div className="absolute inset-0 bg-[url('/mesh-grid.png')] bg-center opacity-10 pointer-events-none"></div>
-      
+
       <Navbar />
-      
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
         {/* App Header */}
         <div className="text-center mb-12">
@@ -91,14 +114,14 @@ export default function Home() {
             <HiOutlineSparkles className="text-blue-400 mr-2" />
             <span className="text-sm font-medium text-blue-300">Professional Certificate Generator</span>
           </div>
-          
+
           <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
             Create stunning certificates
             <span className="block bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400">
               in minutes, not hours.
             </span>
           </h1>
-          
+
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
             Our intuitive platform lets you design and generate professional certificates with enterprise-grade features.
           </p>
@@ -110,13 +133,12 @@ export default function Home() {
           <div className="relative bg-[#0a0a14]/80 border-b border-white/5 px-8 py-4">
             <div className="flex items-center justify-between">
               <div className="flex space-x-1">
-                <button 
+                <button
                   onClick={() => setActiveTab("template")}
-                  className={`relative px-6 py-3 rounded-lg font-medium text-sm transition-all duration-300 ${
-                    activeTab === "template" 
-                      ? "text-white" 
+                  className={`relative px-6 py-3 rounded-lg font-medium text-sm transition-all duration-300 ${activeTab === "template"
+                      ? "text-white"
                       : "text-gray-400 hover:text-gray-300 hover:bg-white/5"
-                  }`}
+                    }`}
                 >
                   <span className="relative z-10 flex items-center">
                     <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -131,14 +153,13 @@ export default function Home() {
                     </>
                   )}
                 </button>
-                
-                <button 
+
+                <button
                   onClick={() => setActiveTab("preview")}
-                  className={`relative px-6 py-3 rounded-lg font-medium text-sm transition-all duration-300 ${
-                    activeTab === "preview" 
-                      ? "text-white" 
+                  className={`relative px-6 py-3 rounded-lg font-medium text-sm transition-all duration-300 ${activeTab === "preview"
+                      ? "text-white"
                       : "text-gray-400 hover:text-gray-300 hover:bg-white/5"
-                  }`}
+                    }`}
                 >
                   <span className="relative z-10 flex items-center">
                     <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -155,7 +176,7 @@ export default function Home() {
                   )}
                 </button>
               </div>
-              
+
               {/* Session indicator */}
               <div className="hidden md:flex items-center bg-white/5 px-3 py-1.5 rounded-full text-xs text-gray-400 border border-white/5">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
@@ -173,11 +194,11 @@ export default function Home() {
                   <div id="template-section" className="relative group">
                     {/* Premium glass card design */}
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-violet-600 rounded-xl opacity-70 blur-xl group-hover:opacity-100 transition duration-500"></div>
-                    
+
                     <div className="relative bg-gradient-to-b from-[#14141f] to-[#0e0e16] border border-white/10 rounded-xl overflow-hidden backdrop-blur-md">
                       {/* Card header with decorative element */}
                       <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-                      
+
                       <div className="relative p-8">
                         <div className="flex items-center mb-6">
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600/10 border border-blue-600/20 mr-4">
@@ -192,8 +213,8 @@ export default function Home() {
                             </p>
                           </div>
                         </div>
-                        
-                        <TemplateSelector 
+
+                        <TemplateSelector
                           selectedTemplate={certificateData.selectedTemplate}
                           onSelectTemplate={(templateId) => handleDataChange({ selectedTemplate: templateId })}
                         />
@@ -205,7 +226,7 @@ export default function Home() {
                     {/* Certificate Form Card - Takes 5/12 of the width */}
                     <div className="lg:col-span-5 relative group">
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl opacity-70 blur-xl group-hover:opacity-100 transition duration-500"></div>
-                      
+
                       <div className="relative bg-gradient-to-b from-[#14141f] to-[#0e0e16] border border-white/10 rounded-xl backdrop-blur-md h-full">
                         <div className="p-6">
                           <div className="flex justify-between items-center mb-6">
@@ -227,10 +248,10 @@ export default function Home() {
                               <span>Change Template</span>
                             </button>
                           </div>
-                          
+
                           {/* Scrollable form container with custom scrollbar */}
                           <div className="pr-2 h-[calc(100vh-260px)] overflow-y-auto custom-scrollbar">
-                            <CertificateForm 
+                            <CertificateForm
                               certificateData={certificateData}
                               onDataChange={handleDataChange}
                             />
@@ -238,11 +259,11 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Preview Card - Takes 7/12 of the width */}
                     <div className="lg:col-span-7 relative group">
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-violet-600 rounded-xl opacity-70 blur-xl group-hover:opacity-100 transition duration-500"></div>
-                      
+
                       <div className="relative bg-gradient-to-b from-[#14141f] to-[#0e0e16] border border-white/10 p-6 rounded-xl backdrop-blur-md h-full">
                         <div className="flex items-center mb-4">
                           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-600/10 border border-violet-600/20 mr-3">
@@ -253,7 +274,7 @@ export default function Home() {
                           </div>
                           <h2 className="text-xl font-bold text-white">Live Preview</h2>
                         </div>
-                        
+
                         <div className="bg-gradient-to-r from-white/5 to-white/10 rounded-lg border border-white/10 p-6 shadow-inner h-[calc(100%-60px)] flex items-center justify-center">
                           {/* Certificate display with subtle float animation */}
                           <div className="w-full max-w-3xl transition transform hover:scale-[1.01] duration-500 ease-out shadow-xl animate-float">
@@ -271,7 +292,7 @@ export default function Home() {
             {activeTab === "preview" && (
               <div className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-xl opacity-70 blur-xl group-hover:opacity-100 transition duration-500"></div>
-                
+
                 <div className="relative bg-gradient-to-b from-[#14141f] to-[#0e0e16] border border-white/10 rounded-xl backdrop-blur-md">
                   <div className="p-8">
                     <div className="flex items-center mb-6">
@@ -288,7 +309,7 @@ export default function Home() {
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="bg-gradient-to-r from-white/5 to-white/10 rounded-lg border border-white/10 p-8 shadow-inner">
                       <div className="max-w-3xl mx-auto">
                         <div className="aspect-[1.414/1] w-full transition transform hover:scale-[1.01] duration-500 ease-out shadow-2xl">
@@ -296,7 +317,7 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="mt-10 flex flex-col md:flex-row gap-10 justify-between items-center">
                       <div className="bg-gradient-to-r from-white/5 to-white/10 rounded-lg border border-white/10 p-4 max-w-xl">
                         <div className="flex items-start">
@@ -313,7 +334,7 @@ export default function Home() {
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="flex space-x-4">
                         <Button
                           onClick={() => setActiveTab("template")}
