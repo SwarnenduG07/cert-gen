@@ -9,27 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import Navbar from "./components/Navbar";
+import { CertificateData } from "@/types/interface";
 
-// Define certificate data type
-interface CertificateData {
-  recipientName: string;
-  certificateTitle: string;
-  issuerName: string;
-  issueDate: Date;
-  description: string;
-  selectedTemplate: number;
-  borderStyle: string;
-  primaryColor: string;
-  secondaryColor: string;
-  font: string;
-  logo?: File;
-  signature?: File;
-  certificateNumber: string;
-  qrCode: boolean;
-  watermark: boolean;
-  selectedText: string | null;
-  selectedElement: string | null;
-}
 
 export default function Home() {
   const [certificateData, setCertificateData] = useState<CertificateData>({
