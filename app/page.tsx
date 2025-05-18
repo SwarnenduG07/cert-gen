@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import Navbar from "./components/Navbar";
 
 // Define certificate data type
 interface CertificateData {
@@ -54,30 +55,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="border-b border-gray-200 dark:border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Certificate Generator
-            </h1>
-            <div className="flex gap-4">
-              <Button
-                variant="outline"
-                onClick={() => {/* Add download logic */}}
-              >
-                Download Certificate
-              </Button>
-              <Button
-                onClick={() => {/* Add save logic */}}
-              >
-                Save Template
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-16">
+      <Navbar />  
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs defaultValue="design" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3 mb-8">
