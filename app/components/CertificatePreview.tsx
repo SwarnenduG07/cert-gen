@@ -26,21 +26,21 @@ export default function CertificatePreview({ data, onDataChange }: CertificatePr
   };
 
   // Generate unique certificate verification URL
-  const verificationUrl = `https://your-domain.com/verify/${data.certificateNumber}`;
+  // const verificationUrl = `https://your-domain.com/verify/${data.certificateNumber}`;
 
-  // Bring back the template rendering function
-  const renderTemplate = () => {
-    switch (data.selectedTemplate) {
-      case 1:
-        return <ClassicTemplate data={data} onTextSelect={handleTextSelect} />;
-      case 2:
-        return <ModernTemplate data={data} onTextSelect={handleTextSelect} />;
-      case 3:
-        return <ElegantTemplate data={data} onTextSelect={handleTextSelect} />;
-      default:
-        return <ClassicTemplate data={data} onTextSelect={handleTextSelect} />;
-    }
-  };
+  // // Bring back the template rendering function
+  // const renderTemplate = () => {
+  //   switch (data.selectedTemplate) {
+  //     case 1:
+  //       return <ClassicTemplate data={data} onTextSelect={handleTextSelect} />;
+  //     case 2:
+  //       return <ModernTemplate data={data} onTextSelect={handleTextSelect} />;
+  //     case 3:
+  //       return <ElegantTemplate data={data} onTextSelect={handleTextSelect} />;
+  //     default:
+  //       return <ClassicTemplate data={data} onTextSelect={handleTextSelect} />;
+  //   }
+  // };
 
   const downloadAsPDF = async () => {
     if (!certificateRef.current) return;

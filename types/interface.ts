@@ -36,4 +36,10 @@ export interface CertificateData {
     watermark: boolean;
     selectedText: string | null;
     selectedElement: string | null;
-  } interface CertificateTemplate {
+  } 
+
+  export interface CertificateTemplate {
+    id: number;
+    name: string;
+    component: React.ReactNode;
+  }

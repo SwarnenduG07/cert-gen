@@ -56,8 +56,7 @@ export default function CertificateForm({ certificateData, onDataChange }: Certi
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onDataChange({ issueDate: new Date(e.target.value) });
   };
-
-  const handleColorChange = (color: any, type: 'primary' | 'secondary') => {
+  const handleColorChange = (color: { hex: string }, type: 'primary' | 'secondary') => {
     onDataChange({ [`${type}Color`]: color.hex });
   };
 

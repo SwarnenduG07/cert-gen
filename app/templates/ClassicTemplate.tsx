@@ -35,13 +35,13 @@ export default function ClassicTemplate({ data, onTextSelect }: ClassicTemplateP
     }
   };
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', { 
-      day: 'numeric', 
-      month: 'long', 
-      year: 'numeric' 
-    }).format(date);
-  };
+  // const formatDate = (date: Date) => {
+  //   return new Intl.DateTimeFormat('en-US', { 
+  //     day: 'numeric', 
+  //     month: 'long', 
+  //     year: 'numeric' 
+  //   }).format(date);
+  // };
 
   return (
     <div className={`h-full border-8 ${
