@@ -1,32 +1,14 @@
 'use client';
 
 import { useRef } from 'react';
-import { QRCodeCanvas } from 'qrcode.react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import ClassicTemplate from '../templates/ClassicTemplate';
 import ModernTemplate from '../templates/ModernTemplate';
 import ElegantTemplate from '../templates/ElegantTemplate';
+import { CertificateData } from '@/types/interface';
 
-interface CertificateData {
-  recipientName: string;
-  certificateTitle: string;
-  issuerName: string;
-  issueDate: Date;
-  description: string;
-  selectedTemplate: number;
-  borderStyle: string;
-  primaryColor: string;
-  secondaryColor: string;
-  font: string;
-  logo?: File;
-  signature?: File;
-  certificateNumber: string;
-  qrCode: boolean;
-  watermark: boolean;
-  selectedText: string | null;
-  selectedElement: string | null;
-}
+
 
 interface CertificatePreviewProps {
   data: CertificateData;
@@ -44,21 +26,21 @@ export default function CertificatePreview({ data, onDataChange }: CertificatePr
   };
 
   // Generate unique certificate verification URL
-  const verificationUrl = `https://your-domain.com/verify/${data.certificateNumber}`;
+  // const verificationUrl = `https://your-domain.com/verify/${data.certificateNumber}`;
 
-  // Bring back the template rendering function
-  const renderTemplate = () => {
-    switch (data.selectedTemplate) {
-      case 1:
-        return <ClassicTemplate data={data} onTextSelect={handleTextSelect} />;
-      case 2:
-        return <ModernTemplate data={data} onTextSelect={handleTextSelect} />;
-      case 3:
-        return <ElegantTemplate data={data} onTextSelect={handleTextSelect} />;
-      default:
-        return <ClassicTemplate data={data} onTextSelect={handleTextSelect} />;
-    }
-  };
+  // // Bring back the template rendering function
+  // const renderTemplate = () => {
+  //   switch (data.selectedTemplate) {
+  //     case 1:
+  //       return <ClassicTemplate data={data} onTextSelect={handleTextSelect} />;
+  //     case 2:
+  //       return <ModernTemplate data={data} onTextSelect={handleTextSelect} />;
+  //     case 3:
+  //       return <ElegantTemplate data={data} onTextSelect={handleTextSelect} />;
+  //     default:
+  //       return <ClassicTemplate data={data} onTextSelect={handleTextSelect} />;
+  //   }
+  // };
 
   const downloadAsPDF = async () => {
     if (!certificateRef.current) return;

@@ -35,13 +35,14 @@ export default function ClassicTemplate({ data, onTextSelect }: ClassicTemplateP
     }
   }
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat("en-US", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).format(date)
-  }
+
+  // const formatDate = (date: Date) => {
+  //   return new Intl.DateTimeFormat('en-US', { 
+  //     day: 'numeric', 
+  //     month: 'long', 
+  //     year: 'numeric' 
+  //   }).format(date);
+  // };
 
   return (
     <div
@@ -117,7 +118,7 @@ export default function ClassicTemplate({ data, onTextSelect }: ClassicTemplateP
           )}
           <div className="w-36 h-0.5 bg-gray-400" />
           <p className="mt-1 text-sm" onMouseUp={() => handleTextSelection("date")}>
-            Date: {formatDate(data.issueDate)}
+            Date: {data.issueDate ? data.issueDate.toLocaleDateString() : ""}
           </p>
         </div>
 
