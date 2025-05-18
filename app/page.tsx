@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CertificateForm from "./components/CertificateForm";
 import TemplateSelector from "./components/TemplateSelector";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,6 +12,8 @@ import { getErrorMsg } from "@/lib/utils";
 import CertificatePreview from "./components/CertificatePreview";
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState("template");
+  
   const [certificateData, setCertificateData] = useState<CertificateData>({
     recipientName: "",
     certificateTitle: "",
@@ -30,6 +32,24 @@ export default function Home() {
     selectedElement: null
   });
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab');
+      
+      if (tabParam && (tabParam === 'template' || tabParam === 'preview')) {
+        setActiveTab(tabParam);
+        
+       
+        if (tabParam === 'template' && window.location.hash === '#template-section') {
+          setTimeout(() => {
+            document.getElementById('template-section')?.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
+        }
+      }
+    }
+  }, []);
+
   const handleDataChange = (data: Partial<CertificateData>) => {
     setCertificateData(prev => ({ ...prev, ...data }));
   };
@@ -37,8 +57,7 @@ export default function Home() {
   const handleDownload = async () => {
     try {
       toast.loading("Downloading certificate...");
-      // The actual download happens in CertificatePreview component
-      // We just need to trigger the success toast after a brief delay
+    //TODO: Add download logic
       setTimeout(() => {
         toast.success("Certificate downloaded successfully!");
       }, 2000);
@@ -53,7 +72,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-16">
       <Navbar />  
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs defaultValue="template" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="template">Design Certificate</TabsTrigger>
             <TabsTrigger value="preview">Preview & Download</TabsTrigger>
@@ -61,8 +80,7 @@ export default function Home() {
 
           <TabsContent value="template" className="space-y-4">
             {!certificateData.selectedTemplate ? (
-              // Show template gallery when no template is selected
-              <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
+              <div id="template-section" className="bg-white dark:bg-gray-800 rounded-lg p-6">
                 <h2 className="text-xl font-semibold mb-4">Choose Your Template</h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Select a template to start customizing your certificate
@@ -73,7 +91,6 @@ export default function Home() {
                 />
               </div>
             ) : (
-              // Show customization interface when template is selected
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="space-y-6">
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
