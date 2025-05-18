@@ -70,7 +70,7 @@ export default function TemplateSelector({
             onClick={() => onSelectTemplate(template.id)}
           >
             <div className="aspect-[1.4/1] p-2 bg-gray-50 dark:bg-gray-200 flex items-center justify-center cursor-pointer overflow-hidden">
-              <div className="transform scale-[.40] origin-center w-[1050px] h-[600px]">
+              <div className="transform scale-[.40] origin-center w-[950px] h-[500px]">
                 {template.component}
               </div>
             </div>

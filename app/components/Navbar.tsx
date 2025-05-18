@@ -29,7 +29,7 @@ export default function Navbar() {
   if (!mounted) return null;
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300bg-gradient-to-r from-violet-600/20 to-blue-600/20 backdrop-blur-lg shadow-sm ${
       isScrolled 
         ? 'bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg shadow-sm' 
         : 'bg-transparent'
