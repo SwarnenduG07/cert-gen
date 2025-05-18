@@ -9,6 +9,7 @@ import { CertificateData } from "@/types/interface";
 import { getErrorMsg } from "@/lib/utils";
 import CertificatePreview from "./components/CertificatePreview";
 import { HiOutlineSparkles } from "react-icons/hi";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("template");
@@ -54,11 +55,17 @@ export default function Home() {
 
   const handleDownload = async () => {
     try {
-      toast.loading("Downloading certificate...");
-      //TODO: Add download logic
-      setTimeout(() => {
-        toast.success("Certificate downloaded successfully!");
-      }, 2000);
+      // Check if our global function exists (it's added to window from CertificatePreview)
+      if (typeof window !== 'undefined' && window.downloadCertificateAsPDF) {
+        // Call the download function directly
+        window.downloadCertificateAsPDF();
+      } else {
+        // Fallback to showing toast only
+        toast.loading("Downloading certificate...");
+        setTimeout(() => {
+          toast.success("Certificate downloaded successfully!");
+        }, 2000);
+      }
     } catch (error) {
       toast.error("Failed to download certificate", {
         description: error instanceof Error ? error.message : String(error) || getErrorMsg(error),
@@ -308,7 +315,7 @@ export default function Home() {
                       </div>
                       
                       <div className="flex space-x-4">
-                        <button
+                        <Button
                           onClick={() => setActiveTab("template")}
                           className="px-5 py-3 bg-white/5 hover:bg-white/10 text-gray-300 border border-white/10 rounded-lg text-sm font-medium transition-all flex items-center"
                         >
@@ -316,7 +323,7 @@ export default function Home() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                           </svg>
                           Return to Editor
-                        </button>
+                        </Button>
                         <button
                           onClick={handleDownload}
                           className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition transform hover:translate-y-[-2px] shadow-lg hover:shadow-indigo-500/25 flex items-center"

@@ -60,10 +60,6 @@ export default function CertificateForm({ certificateData, onDataChange }: Certi
     onDataChange({ [`${type}Color`]: color.hex });
   };
 
-  const downloadCertificate = () => {
-    // This will be implemented to download the certificate as PDF
-    alert('Download functionality will be implemented here');
-  };
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -379,12 +375,7 @@ export default function CertificateForm({ certificateData, onDataChange }: Certi
         </div>
       )}
 
-      <button
-        onClick={downloadCertificate}
-        className="w-full bg-blue-600 text-white p-2 rounded font-medium hover:bg-blue-700 transition"
-      >
-        Download Certificate
-      </button>
+      
     </div>
   );
 } 
